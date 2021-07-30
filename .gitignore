@@ -65,3 +65,8 @@
 /STM32F407ZGT6_01
 /Examples
 /Test_407_LED14
+/TestSoft_TFT_eSPI/Test_Touch_Controller/.vs
+/TestSoft_TFT_eSPI/Test_Touch_Controller/__vm
+/TestSoft_TFT_eSPI/Test_Touch_Controller/Test_Touch_Controller.ino.esp32.bin
+/TestSoft_TFT_eSPI/Test_Touch_Controller/Test_Touch_Controller.sln
+/TestSoft_TFT_eSPI/Test_Touch_Controller/Test_Touch_Controller.vcxproj
