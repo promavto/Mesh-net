@@ -26,7 +26,7 @@ void setup(void) {
   Serial.println("\n\nStarting...");
 
   tft.init();
-  tft.setRotation(1);
+  tft.setRotation(0);
   tft.fillScreen(TFT_BLACK);
 
 
