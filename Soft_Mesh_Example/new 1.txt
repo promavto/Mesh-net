@@ -1,0 +1,4 @@
+//!!RTC_SET
+
+RTC_DS3231  rtc = controller.GetClock();
+	  DateTime currentTime = rtc.now();
