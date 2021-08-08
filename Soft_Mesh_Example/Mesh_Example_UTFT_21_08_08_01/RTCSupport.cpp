@@ -1314,76 +1314,43 @@ RTCTime RTC_DS3231::getTime()
 		RTCWireBus->_I2C_WRITE((byte)0);
 		RTCWireBus->endTransmission();
 
-		RTCWireBus->requestFrom(DS3231_ADDRESS, 7);
+		if (RTCWireBus->endTransmission() != 0) // ошибка
+		return t;
+
+
+	//	RTCWireBus->requestFrom(DS3231_ADDRESS, 7);
+		if (RTCWireBus->requestFrom(DS3231_ADDRESS, 7) == 7) // читаем 7 байт, начиная с регистра 0
+ 		{
 		
-		t.second = bcd2bin(RTCWireBus->_I2C_READ() & 0x7F);
-		if (t.second > 59)
-		t.second = 59;
+			t.second = bcd2bin(RTCWireBus->_I2C_READ() & 0x7F);
+			if (t.second > 59)
+			t.second = 59;
 
-		t.minute = bcd2bin(RTCWireBus->_I2C_READ());
-		if (t.minute > 59)
-		t.minute = 59;
+			t.minute = bcd2bin(RTCWireBus->_I2C_READ());
+			if (t.minute > 59)
+			t.minute = 59;
 
-		t.hour = bcd2bin(RTCWireBus->_I2C_READ());
-		if (t.hour > 23)
-		t.hour = 23;
+			t.hour = bcd2bin(RTCWireBus->_I2C_READ());
+			if (t.hour > 23)
+			t.hour = 23;
 
-		//RTCWireBus->_I2C_READ();
-		t.dayOfWeek = bcd2bin(RTCWireBus->_I2C_READ());
-		t.dayOfWeek = constrain(t.dayOfWeek, 1, 7);
+			//RTCWireBus->_I2C_READ();
+			t.dayOfWeek = bcd2bin(RTCWireBus->_I2C_READ());
+			t.dayOfWeek = constrain(t.dayOfWeek, 1, 7);
 
-		t.dayOfMonth = bcd2bin(RTCWireBus->_I2C_READ());
-		t.dayOfMonth = constrain(t.dayOfMonth, 1, 31);
+			t.dayOfMonth = bcd2bin(RTCWireBus->_I2C_READ());
+			t.dayOfMonth = constrain(t.dayOfMonth, 1, 31);
 
-		t.month = bcd2bin(RTCWireBus->_I2C_READ());
-		t.month = constrain(t.month, 1, 12);
+			t.month = bcd2bin(RTCWireBus->_I2C_READ());
+			t.month = constrain(t.month, 1, 12);
 
-		t.year = bcd2bin(RTCWireBus->_I2C_READ());
-		t.year += 2000; // приводим время к нормальному формату
+			t.year = bcd2bin(RTCWireBus->_I2C_READ());
+			t.year += 2000; // приводим время к нормальному формату
 
+		} // if
 
 		lastRequestTime = millis();
 	}
-
-	//return DateTime(y, m, d, hh, mm, ss);
-
-	//if (!lastRequestTime || ((millis() - lastRequestTime) > 999))
-	//{
-	//	wireInterface->beginTransmission(DS3231Address);
-	//	wireInterface->write(0); // говорим, что мы собираемся читать с регистра 0
-
-	//	if (wireInterface->endTransmission(true) != 0) // ошибка
-	//		return t;
-
-	//	if (wireInterface->requestFrom(DS3231Address, 7) == 7) // читаем 7 байт, начиная с регистра 0
-	//	{
-	//		t.second = bcd2dec(wireInterface->read() & 0x7F);
-	//		if (t.second > 59)
-	//			t.second = 59;
-
-	//		t.minute = bcd2dec(wireInterface->read());
-	//		if (t.minute > 59)
-	//			t.minute = 59;
-
-	//		t.hour = bcd2dec(wireInterface->read() & 0x3F);
-	//		if (t.hour > 23)
-	//			t.hour = 23;
-
-	//		t.dayOfWeek = bcd2dec(wireInterface->read());
-	//		t.dayOfWeek = constrain(t.dayOfWeek, 1, 7);
-
-	//		t.dayOfMonth = bcd2dec(wireInterface->read());
-	//		t.dayOfMonth = constrain(t.dayOfMonth, 1, 31);
-
-	//		t.month = bcd2dec(wireInterface->read());
-	//		t.month = constrain(t.month, 1, 12);
-
-	//		t.year = bcd2dec(wireInterface->read());
-	//		t.year += 2000; // приводим время к нормальному формату
-	//	} // if
-
-	//	lastRequestTime = millis();
-	//}
 
 	return t;
 
@@ -1445,217 +1412,36 @@ RTCTime RTCTime::maketime(uint32_t time)
   return result;
 }    
 
-//char RealtimeClock::workBuff[12] = {0};
+//
 //--------------------------------------------------------------------------------------------------------------------------------------
-//RealtimeClock::RealtimeClock()
-//{
-//
-//  //  wireInterface = &Wire;
-//
-//}
-////--------------------------------------------------------------------------------------------------------------------------------------
-//
-////--------------------------------------------------------------------------------------------------------------------------------------
-//uint8_t RealtimeClock::dec2bcd(uint8_t val)
-//{
-//  return( (val/10*16) + (val%10) );
-//}
-////--------------------------------------------------------------------------------------------------------------------------------------
-//uint8_t RealtimeClock::bcd2dec(uint8_t val)
-//{
-//  return( (val/16*10) + (val%16) );
-//}
-//
-////--------------------------------------------------------------------------------------------------------------------------------------
-//void RealtimeClock::setTime(const RTCTime& time)
-//{
-//  setTime(time.second, time.minute, time.hour, time.dayOfWeek, time.dayOfMonth, time.month,time.year);
-//}
-////--------------------------------------------------------------------------------------------------------------------------------------
-//void RealtimeClock::setTime(uint8_t second, uint8_t minute, uint8_t hour, uint8_t dayOfWeek, uint8_t dayOfMonth, uint8_t month, uint16_t year)
-//{
-//
-//  while(year > 100) // приводим к диапазону 0-99
-//    year -= 100;
-// 
-//  wireInterface->beginTransmission(DS3231Address);
-//  
-//  wireInterface->write(0); // указываем, что начинаем писать с регистра секунд
-//  wireInterface->write(dec2bcd(second)); // пишем секунды
-//  wireInterface->write(dec2bcd(minute)); // пишем минуты
-//  wireInterface->write(dec2bcd(hour)); // пишем часы
-//  wireInterface->write(dec2bcd(dayOfWeek)); // пишем день недели
-//  wireInterface->write(dec2bcd(dayOfMonth)); // пишем дату
-//  wireInterface->write(dec2bcd(month)); // пишем месяц
-//  wireInterface->write(dec2bcd(year)); // пишем год
-//  
-//  wireInterface->endTransmission(true);  
-//
-//  delay(10); // немного подождём для надёжности
-//
-//}
-////--------------------------------------------------------------------------------------------------------------------------------------
-//Temperature RealtimeClock::getTemperature()
-//{
-//
-//     Temperature res;
-//      
-//     union int16_byte {
-//           int i;
-//           byte b[2];
-//       } rtcTemp;
-//         
-//      wireInterface->beginTransmission(DS3231Address);
-//      wireInterface->write(0x11);
-//      if(wireInterface->endTransmission(true) != 0) // ошибка
-//        return res;
-//    
-//      if(wireInterface->requestFrom(DS3231Address, 2) == 2)
-//      {
-//        rtcTemp.b[1] = wireInterface->read();
-//        rtcTemp.b[0] = wireInterface->read();
-//    
-//        long tempC100 = (rtcTemp.i >> 6) * 25;
-//    
-//        res.Value = tempC100/100;
-//        res.Fract = abs(tempC100 % 100);
-//        
-//      }
-//      
-//      return res;
-// 
-//}
-////--------------------------------------------------------------------------------------------------------------------------------------
-//RTCTime RealtimeClock::getTime()
-//{
-//  static RTCTime t;
-//  static uint32_t lastRequestTime = 0;
-//  
-//  if(!lastRequestTime)
-//    memset(&t,0,sizeof(t));
-// 
-//
-//     if(!lastRequestTime || ( (millis() - lastRequestTime) > 999) )
-//     {
-//        wireInterface->beginTransmission(DS3231Address);
-//        wireInterface->write(0); // говорим, что мы собираемся читать с регистра 0
-//        
-//        if(wireInterface->endTransmission(true) != 0) // ошибка
-//          return t;
-//        
-//        if(wireInterface->requestFrom(DS3231Address, 7) == 7) // читаем 7 байт, начиная с регистра 0
-//        {
-//            t.second = bcd2dec(wireInterface->read() & 0x7F);
-//            if(t.second > 59)
-//              t.second = 59;
-//            
-//            t.minute = bcd2dec(wireInterface->read());
-//            if(t.minute > 59)
-//              t.minute = 59;
-//            
-//            t.hour = bcd2dec(wireInterface->read() & 0x3F);
-//            if(t.hour > 23)
-//              t.hour = 23;
-//            
-//            t.dayOfWeek = bcd2dec(wireInterface->read());
-//            t.dayOfWeek = constrain(t.dayOfWeek,1,7);
-//            
-//            t.dayOfMonth = bcd2dec(wireInterface->read());
-//            t.dayOfMonth = constrain(t.dayOfMonth,1,31);
-//            
-//            t.month = bcd2dec(wireInterface->read());
-//            t.month = constrain(t.month,1,12);
-//            
-//            t.year = bcd2dec(wireInterface->read());     
-//            t.year += 2000; // приводим время к нормальному формату
-//        } // if
-//
-//        lastRequestTime = millis();
-//     }
-//      
-//      return t;
-// 
-//}
-////--------------------------------------------------------------------------------------------------------------------------------------
-//const char* RealtimeClock::getDayOfWeekStr(const RTCTime& t)
-//{
-//  uint8_t idx = t.dayOfWeek;
-//  if(idx > 0)
-//    --idx;
-//
-//  if(idx > 6)
-//    idx = 6;
-//    
-//  static const char* dow[] = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
-//  return dow[idx];
-//}
-////--------------------------------------------------------------------------------------------------------------------------------------
-//const char* RealtimeClock::getTimeStr(const RTCTime& t)
-//{
-//  char* writePtr = workBuff;
-//  
-//  if(t.hour < 10)
-//    *writePtr++ = '0';
-//  else
-//    *writePtr++ = (t.hour/10) + '0';
-//
-//  *writePtr++ = (t.hour % 10) + '0';
-//
-// *writePtr++ = ':';
-//
-// if(t.minute < 10)
-//  *writePtr++ = '0';
-// else
-//  *writePtr++ = (t.minute/10) + '0';
-//
-// *writePtr++ = (t.minute % 10) + '0';
-//
-// *writePtr++ = ':';
-//
-// if(t.second < 10)
-//  *writePtr++ = '0';
-// else
-//  *writePtr++ = (t.second/10) + '0';
-//
-// *writePtr++ = (t.second % 10) + '0';
-//
-// *writePtr = 0;
-//
-// return workBuff;
-//}
-////--------------------------------------------------------------------------------------------------------------------------------------
-//const char* RealtimeClock::getDateStr(const RTCTime& t)
-//{
-//  char* writePtr = workBuff;
-//  if(t.dayOfMonth < 10)
-//    *writePtr++ = '0';
-//  else
-//    *writePtr++ = (t.dayOfMonth/10) + '0';
-//  *writePtr++ = (t.dayOfMonth % 10) + '0';
-//
-//  *writePtr++ = '.';
-//
-//  if(t.month < 10)
-//    *writePtr++ = '0';
-//  else
-//    *writePtr++ = (t.month/10) + '0';
-//  *writePtr++ = (t.month % 10) + '0';
-//
-//  *writePtr++ = '.';
-//
-//  *writePtr++ = (t.year/1000) + '0';
-//  *writePtr++ = (t.year % 1000)/100 + '0';
-//  *writePtr++ = (t.year % 100)/10 + '0';
-//  *writePtr++ = (t.year % 10) + '0';  
-//
-//  *writePtr = 0;
-//
-//  return workBuff;
-//}
-////--------------------------------------------------------------------------------------------------------------------------------------
-//void RealtimeClock::begin(uint8_t wireNumber)
-//{
-//  //  wireInterface = &Wire;
-//}
-////--------------------------------------------------------------------------------------------------------------------------------------
-//
+void RTC_DS3231::setTime(const RTCTime& time)
+{
+  setTime(time.second, time.minute, time.hour, time.dayOfWeek, time.dayOfMonth, time.month,time.year);
+}
+//--------------------------------------------------------------------------------------------------------------------------------------
+void RTC_DS3231::setTime(uint8_t second, uint8_t minute, uint8_t hour, uint8_t dayOfWeek, uint8_t dayOfMonth, uint8_t month, uint16_t year)
+{
+
+  while(year > 100) // приводим к диапазону 0-99
+    year -= 100;
+  RTCWireBus->beginTransmission(DS3231_ADDRESS);
+  RTCWireBus->_I2C_WRITE((byte)DS3231_TIME); // start at location 0
+  RTCWireBus->_I2C_WRITE(bin2bcd(second));
+  RTCWireBus->_I2C_WRITE(bin2bcd(minute));
+  RTCWireBus->_I2C_WRITE(bin2bcd(hour));
+  // The RTC must know the day of the week for the weekly alarms to work.
+  RTCWireBus->_I2C_WRITE(bin2bcd(dowToDS3231(dayOfWeek)));
+  RTCWireBus->_I2C_WRITE(bin2bcd(dayOfMonth));
+  RTCWireBus->_I2C_WRITE(bin2bcd(month));
+  RTCWireBus->_I2C_WRITE(bin2bcd(year));
+  RTCWireBus->endTransmission();
+
+  uint8_t statreg =
+	  read_i2c_register(DS3231_ADDRESS, DS3231_STATUSREG, RTCWireBus);
+  statreg &= ~0x80; // flip OSF bit
+  write_i2c_register(DS3231_ADDRESS, DS3231_STATUSREG, statreg, RTCWireBus);
+ 
+  delay(10); // немного подождём для надёжности
+
+}
+//--------------------------------------------------------------------------------------------------------------------------------------

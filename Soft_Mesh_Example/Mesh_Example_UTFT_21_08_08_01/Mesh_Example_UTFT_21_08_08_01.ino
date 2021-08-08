@@ -333,15 +333,11 @@ void initI2C()
 {
   //  // инициализация I2C, специфичная для Arduino Due
 
-  //  // инициализируем стандартными методами
-      Wire.begin();
-   //   Wire.setClock(I2C_SPEED);
+    //// инициализируем стандартными методами
+    //  Wire.begin();
+    //  Wire.setClock(I2C_SPEED);
 
-  //    if(DS3231_WIRE_NUMBER == 1)
-  //    {
-  //      Wire1.begin();
-  ////      Wire1.setClock(I2C_SPEED);
-  //    }    
+ 
 }
 //--------------------------------------------------------------------------------------------------------------------------------
 void doResetI2C(uint8_t sclPin, uint8_t sdaPin)
@@ -410,7 +406,7 @@ void setup()
 
   START_LOG(3);
 
-  initI2C();  
+ // initI2C();  
 
    START_LOG(4);
 
