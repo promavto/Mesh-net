@@ -326,6 +326,7 @@ void TFTMenu::setup()
 	tftTouch = tftDC;//new TOUCH_Class(TOUCH_CS, IRQ_PIN);  // Param 2 - Touch IRQ Pin - interrupt enabled polling
 
   TFTCalibrationData data = Settings.GetCalibrationData();
+  Serial.println(data.isValid);
   if(data.isValid)
   {
     tftTouch->setTouch(data.points);
