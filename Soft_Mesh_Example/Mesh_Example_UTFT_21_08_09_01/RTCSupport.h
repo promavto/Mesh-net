@@ -3,7 +3,6 @@
 
 #include <Arduino.h>
 #include <Wire.h>
-class TimeSpan;
 #include "AbstractModule.h"
 
 #define DS3231_ADDRESS        0x68   // I2C address for DS3231
@@ -18,6 +17,8 @@ class TimeSpan;
 /** Constants */
 #define SECONDS_PER_DAY 86400L       // 60 * 60 * 24
 #define SECONDS_FROM_1970_TO_2000 946684800 // Unixtime for 2000-01-01 00:00:00, useful for initialization
+
+class TimeSpan;
 
 //--------------------------------------------------------------------------------------------------------------------------------------
 struct RTCTime // данные по текущему времени
@@ -177,7 +178,7 @@ public:
 	TimeSpan(const TimeSpan &copy);
 
 	/*!
-		@brief  Number of days in the TimeSpan
+		@brief  Number of days in the TimeSpan краткое количество дней во временном интервале
 				e.g. 4
 		@return int16_t days
 	*/
