@@ -117,6 +117,7 @@ uint16_t x, y;
 
 #define rele1 32
 #define rele2 33
+#define LCD_Led 16
 
 // Generally, you should use "unsigned long" for variables that hold time
 // The value will quickly become too large for an int to store
@@ -132,6 +133,9 @@ void setup() {
 	pinMode(rele2, OUTPUT);
 	digitalWrite(rele1, LOW);
 	digitalWrite(rele2, LOW);
+
+	pinMode(LCD_Led, OUTPUT);
+	digitalWrite(LCD_Led, LOW);
 
 	Serial.println(""); Serial.println("");
 	Serial.println("TFT_eSPI library test!");
