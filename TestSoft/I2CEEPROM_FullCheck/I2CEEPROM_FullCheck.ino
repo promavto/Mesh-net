@@ -14,7 +14,6 @@
 //#include <I2CEEPROM.h>
 #include <Wire.h>
 #include "AT24CX.h"
-//#include <Wire.h>
 #include "driver/i2c.h"
 
 #define CHIP_ADDRESS 0x50 // Address of EEPROM chip (24LC256->0x50)
